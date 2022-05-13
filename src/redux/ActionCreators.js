@@ -37,7 +37,8 @@ export const postUsers = (firstName, lastName, email, phoneNumber, address1, add
         var errmess = new Error(error.message);
         throw errmess;
     }).then(response => response.json())
-        .then(response => dispatch(addUsers(response)))
+        // .then(response => dispatch(addUsers(response)))
+        .then(response => dispatch(fetchUsers(response)))
         .catch(error => {
             console.log('Add Users, ', error.message);
             alert("Your Comment could not be posted \nError:" + error.message)
@@ -86,8 +87,8 @@ export const updateUsers = (_id, firstName, lastName, email, phoneNumber, addres
         comments: comments
     };
 
-    return fetch(baseUrl + 'users', {
-        method: 'UPDATE',
+    return fetch(baseUrl + 'users/' + _id, {
+        method: 'PUT',
         body: JSON.stringify(newUsers),
         headers: {
             'Content-Type': 'application/json'
@@ -104,7 +105,8 @@ export const updateUsers = (_id, firstName, lastName, email, phoneNumber, addres
         var errmess = new Error(error.message);
         throw errmess;
     }).then(response => response.json())
-        .then(response => dispatch(editUsers(response)))
+        // .then(response => dispatch(editUsers(response)))
+        .then(response => dispatch(fetchUsers(response)))
         .catch(error => {
             console.log('Update Users, ', error.message);
             alert("Your User could not be Updated \nError:" + error.message);
@@ -123,6 +125,7 @@ export const deleteUsers = (_id) => (dispatch) => {
         body: null,
         credentials: 'same-origin'
     }).then(response => {
+        console.log('response-new::: ', response)
         if (response.ok) return response;
         else {
             var error = new Error('Error ' + response.status + ': ' + response.statusText);
@@ -132,11 +135,11 @@ export const deleteUsers = (_id) => (dispatch) => {
     }, error => {
         var errmess = new Error(error.message);
         throw errmess;
-    }).then(response => response.json())
-        .then(response => dispatch(delUsers(response)))
+    })//.then(response => response.json())
+        .then(response => dispatch(fetchUsers()))
         .catch(error => {
             console.log('Delete Users, ', error.message);
-            alert("User could not deleteted! \nError:" + error.message);
+            console.log("User could not deleteted! \nError:" + error.message);
         });
 
 };
@@ -162,7 +165,6 @@ export const editUsers = (users) => ({
 });
 
 
-export const delUsers = (users) => ({
+export const delUsers = () => ({
     type: ActionTypes.DELETE_USERS,
-    payload: users
 });

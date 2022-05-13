@@ -20,12 +20,125 @@
             font-size: 18px;
         }
 
+        .btn-outline-primary {
+            color: #4099F1;
+        }
+
+        .btn-outline-primary:hover {
+            background-color: #4099F1;
+        }
+
+        .btn-hover-primary:hover {
+            background-color: #FFF !important;
+            border-color: #4099F1;
+            color: #4099F1;
+        }
+
+        .container {
+            max-width: 1366px;
+        }
+
+        .banner-title {
+            z-index: 1;
+            top: 256px;
+            left: 191px;
+            width: 480px;
+            height: 272px;
+            text-align: left;
+            font: normal normal bold 64px/90px Merriweather;
+            letter-spacing: 0.45px;
+            color: #1E202F;
+            opacity: 1;
+        }
+
+        .banner-btn {
+            position: relative;
+            left: 0;
+            opacity: 1;
+            font-weight: 500;
+            font-size: 16px;
+            background-color: #4099F1;
+        }
+
+        .banner-title::before {
+            z-index: -1;
+            content: ' ';
+            position: absolute;
+            top: 140px;
+            left: 0;
+            width: 344px;
+            height: 29px;
+            background: #E2E0FF 0% 0% no-repeat padding-box;
+            opacity: 1;
+        }
+
+        .blog-title {
+            max-width: 312px;
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .blog-title::before {
+            content: " ";
+            height: 2px;
+            width: 30px;
+            position: relative;
+            background-color: #1E202F;
+            left: 0;
+            top: 10px;
+            float: left;
+            margin-right: 10px;
+        }
+
+        .blog-heading {
+            text-align: left;
+            font: normal normal bold 32px/42px Merriweather;
+            letter-spacing: 0.5px;
+            color: #1E202F;
+            opacity: 1;
+        }
+
+        .blog-image {
+            top: 947px;
+            left: 191px;
+            width: 312px;
+            height: 322px;
+            background: transparent url('img/Mask Group 1.png') 0% 0% no-repeat padding-box;
+            opacity: 1;
+        }
+
+        .title {
+            width: 312px;
+            text-align: left;
+            font: normal normal 900 20px/30px Merriweather;
+            letter-spacing: 0.42px;
+            color: #1E202F;
+            opacity: 1;
+        }
+
+        .desc {
+            max-width: 312px;
+        }
+
         p {
             font-family: Muli;
             font-size: 18px;
+            text-align: left;
+            font: normal normal normal 12px/23px Muli;
+            letter-spacing: 0.24px;
+            color: #888990;
+            opacity: 1;
+        }
+
+        .footer-nav a {
+            text-align: right;
+            font: normal normal normal 16px/26px Muli;
+            letter-spacing: 0.5px;
+            color: #82868A;
+            opacity: 1;
         }
     </style>
-    <title>Hello, world!</title>
+    <title>Email Newsletter</title>
 </head>
 
 <body>
@@ -39,10 +152,10 @@
             </button>
             <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
                 <ul class="navbar-nav mr-0 mb-2 mb-lg-0">
-                    <li class="nav-item"><a class="nav-link active" href="#">Why Us?</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">Marketing Platform</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">Pricing</a></li>
-                    <li class="nav-item">
+                    <li class="nav-item mx-2"><a class="nav-link active" href="#">Why Us?</a></li>
+                    <li class="nav-item mx-2"><a class="nav-link" href="#">Marketing Platform</a></li>
+                    <li class="nav-item mx-2"><a class="nav-link" href="#">Pricing</a></li>
+                    <li class="nav-item mx-2">
                         <a class="btn btn-outline-primary rounded-0 mt-1 mx-2">Sign Up it's Free</a>
                     </li>
                 </ul>
@@ -53,15 +166,15 @@
     <div class="container">
         <div class="row py-md-5 py-sm-3">
             <div class="col ">
-                <div class="d-flex justify-content-center align-items-center position-relative" style="font-family: Muli">
-                    <p style="z-index:1;top: 256px;left: 191px;width: 480px;height: 272px;text-align: left;font: normal normal bold 64px/90px Merriweather;letter-spacing: 0.45px;color: #1E202F;opacity: 1;">
-                        We take care Marketing things</p>
-                    <div style="position: absolute;top: 140px; left: 80px; width: 344px; height: 29px;background: #E2E0FF 0% 0% no-repeat padding-box; opacity: 1;"></div>
+                <div class="d-flex justify-content-start align-items-center position-relative"
+                    style="font-family: Muli">
+                    <p class="banner-title">We take care Marketing things</p>
                 </div>
-                <Button class="btn btn-primary py-3 px-5 rounded-0" style="position: relative;left: 80px; opacity: 1; font-weight: 600; font-size: 18px;background-color: #4099F1;">Pick a Plan</Button>
+                <Button class="btn btn-primary btn-hover-primary py-3 px-5 rounded-0 banner-btn">Pick a Plan</Button>
             </div>
             <div class="col">
-                <div class="text"><img class="img-fluid" style="max-width: 636px;max-height: 542px;" src="./images/Illustration.svg" alt=""></div>
+                <div class="text"><img class="img-fluid" style="max-width: 636px;max-height: 542px;"
+                        src="./images/Illustration.svg" alt="image"></div>
             </div>
         </div>
     </div>
@@ -69,50 +182,38 @@
 
     <div class="container">
         <div class="row py-md-5 py-sm-3">
-            <p style="top: 831px; left: 191px; width: 81px; height: 18px; opacity: 1;">BLOG</p>
-            <h2 class="font-weight-bolder">Explore Marketing Tips</h2>
+            <p class="blog-title">BLOG</p>
+            <h2 class="font-weight-bolder blog-heading">Explore Marketing Tips</h2>
         </div>
-        <div class="row py-md-5 py-sm-3 justify-content-center d-flex justify-content-evenly">
+        <div class="row py-md-5 py-sm-3 justify-content-center d-flex justify-content-between">
             <div class="col">
-                <img style="top: 947px; left: 191px; width: 312px; height: 322px; background: transparent url('img/Mask Group 1.png') 0% 0% no-repeat padding-box; opacity: 1;"
-                    src="./images/Mask Group 1.png" alt="">
-                <h3 class="title"
-                    style="width: 312px; text-align: left;font: normal normal 900 20px/30px Merriweather;letter-spacing: 0.42px;color: #1E202F;opacity: 1;">
+                <img class="img-fluid blog-img" src="./images/Mask Group 1.png" alt="image">
+                <h3 class="title">
                     Tips for a good Pitching Presentation</h3>
-                <p class="desc"
-                    style="width: 312px; text-align: left; font: normal normal normal 12px/23px Muli; letter-spacing: 0.24px; color: #888990; opacity: 1;">
+                <p class="desc">
                     Far far away, behind the word mountains, far from the countries Vokalia and
                     Consonantia.</p>
             </div>
             <div class="col">
-                <img style="top: 947px; left: 191px; width: 312px; height: 322px; background: transparent url('img/Mask Group 2.png') 0% 0% no-repeat padding-box; opacity: 1;"
-                    src="./images/Mask Group 2.png" alt="">
-                <h3 class="title"
-                    style="width: 312px; text-align: left;font: normal normal 900 20px/30px Merriweather;letter-spacing: 0.42px;color: #1E202F;opacity: 1;">
-                    Tips for a good Pitching Presentation</h3>
-                <p class="desc"
-                    style="width: 312px; text-align: left; font: normal normal normal 12px/23px Muli; letter-spacing: 0.24px; color: #888990; opacity: 1;">
+                <img class="img-fluid blog-img" src="./images/Mask Group 2.png" alt="image">
+                <h3 class="title">
+                    Improve Your Content’s Traffic</h3>
+                <p class="desc">
                     Far far away, behind the word mountains, far from the countries Vokalia and
                     Consonantia.</p>
             </div>
             <div class="col">
-                <img style="top: 947px; left: 191px; width: 312px; height: 322px; background: transparent url('img/Mask Group 3.png') 0% 0% no-repeat padding-box; opacity: 1;"
-                    src="./images/Mask Group 3.png" alt="">
-                <h3 class="title"
-                    style="width: 312px; text-align: left;font: normal normal 900 20px/30px Merriweather;letter-spacing: 0.42px;color: #1E202F;opacity: 1;">
-                    Tips for a good Pitching Presentation</h3>
-                <p class="desc"
-                    style="width: 312px; text-align: left; font: normal normal normal 12px/23px Muli; letter-spacing: 0.24px; color: #888990; opacity: 1;">
+                <img class="img-fluid blog-img" src="./images/Mask Group 3.png" alt="image">
+                <h3 class="title">
+                    Reaching Deal with your Clients</h3>
+                <p class="desc">
                     Far far away, behind the word mountains, far from the countries Vokalia and
                     Consonantia.</p>
-
-
             </div>
-
         </div>
     </div>
 
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light footer-nav">
         <div class="container">
             <a class="navbar-brand" href="#"><img src="./images/logo.png" alt="Logo"></a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
@@ -120,15 +221,15 @@
                 aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent"
-                style="text-align: right; font: normal normal normal 16px/26px Muli; letter-spacing: 0.5px; color: #82868A; opacity: 1;">
+            <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
                 <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
                     <li class="nav-item"><a class="nav-link active" href="#">Terms & Condition</a></li>
                     <li class="nav-item"><a class="nav-link" href="#">Privacy Policy</a></li>
                 </ul>
                 <ul class="navbar-nav mr-auto mb-2 mb-lg-0">
-                    <li class="nav-item"><a class="nav-link active" href="#">® 2019 Company name. All rights
-                            reserved.</a></li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#">® 2019 Company name. All rights reserved.</a>
+                    </li>
                 </ul>
             </div>
         </div>
