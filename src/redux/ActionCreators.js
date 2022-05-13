@@ -116,9 +116,6 @@ export const updateUsers = (_id, firstName, lastName, email, phoneNumber, addres
 
 
 export const deleteUsers = (_id) => (dispatch) => {
-    const newUsers = {
-        _id: _id
-    };
 
     return fetch(baseUrl + 'users/' + _id, {
         method: 'DELETE',

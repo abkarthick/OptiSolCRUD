@@ -3,7 +3,6 @@ import { Form, Row, Col, Container, Button, Table } from 'react-bootstrap';
 import { Control, LocalForm, Errors } from 'react-redux-form';
 import { Loading } from './LoadingComponent';
 
-import BsModal from './Modal';
 
 const required = (val) => val && val.length;
 const maxLength = (len) => (val) => !(val) || (val.length <= len);
@@ -23,46 +22,20 @@ export default class Bio extends Component {
         this.handleUpdate = this.handleUpdate.bind(this);
         this.handleDelete = this.handleDelete.bind(this);
         this.viewUsers = this.viewUsers.bind(this);
-
-        console.log(this.props.user);
         this.state = {
             updatable: false,
             user: this.props.user,
             modalShow: false,
             toggleSubmit: false,
-            // _id: '',
-            // firstName: '',
-            // lastName: '',
-            // email: '',
-            // phoneNumber: '',
-            // address1: '',
-            // address2: '',
-            // city: '',
-            // state: '',
-            // zipCode: '',
-            // country: '',
-            // qualification: '',
-            // comments: '',
             showBtnToggle: false
-
         };
     }
 
     componentDidMount() {
-        // console.log('this.props.user MOUNT ::', this.props.user)
         this.setState({
             user: this.props.user
         });
     }
-
-    // componentDidUpdate() {
-    //     console.log('this.props.user UPDATE ::', this.props.user)
-
-    //     this.setState({
-    //         user: this.props.user
-    //     });
-    // }
-
 
     handleClear() {
         this.setState = ({
@@ -71,7 +44,9 @@ export default class Bio extends Component {
             firstName: '',
             lastName: '',
             email: '',
-            phoneNumber: '',
+            phoneNumberExt: '',
+            phoneNumber1: '',
+            phoneNumber2: '',
             address1: '',
             address2: '',
             city: '',
@@ -86,17 +61,16 @@ export default class Bio extends Component {
     }
 
     handleUpdate(val) {
-        // console.log('handleUpdate', e.target.getAttribute("data-id"));
-        console.log('this.props.user', this.props.user);
         const singleUser = this.props.user.filter(user => user._id === val)[0];
-
         this.setState({
             updatable: true,
             _id: singleUser._id,
             firstName: singleUser.firstName,
             lastName: singleUser.lastName,
             email: singleUser.email,
-            phoneNumber: singleUser.phoneNumber,
+            phoneNumberExt: (singleUser.phoneNumber).toString().split(" ")[0],
+            phoneNumber1: (singleUser.phoneNumber).toString().split(" ")[1],
+            phoneNumber2: (singleUser.phoneNumber).toString().split(" ")[2],
             address1: singleUser.address1,
             address2: singleUser.address2,
             city: singleUser.city,
@@ -112,7 +86,6 @@ export default class Bio extends Component {
 
     handleFormUpdate() {
         if (this.state._id && this.state._id != null) {
-            console.log('this.state::::::::::::::::::::::::: ', this.state);
             this.props.updateUsers(
                 this.state._id,
                 this.state.firstName,
@@ -128,7 +101,6 @@ export default class Bio extends Component {
                 this.state.qualification,
                 this.state.comments
             );
-            // this.setState({ _id: null });
         }
     }
 
@@ -137,12 +109,7 @@ export default class Bio extends Component {
     }
 
     viewUsers(val) {
-        console.log('this.props.user', this.props.user.filter(user => user._id === val)[0]);
-
         const singleUser = this.props.user.filter(user => user._id === val)[0];
-
-        console.log('singleUser._id', singleUser._id);
-
         this.setState({
             _id: singleUser._id,
             firstName: singleUser.firstName,
@@ -160,14 +127,6 @@ export default class Bio extends Component {
             toggleSubmit: false,
             showBtnToggle: true
         });
-
-        // return (
-        //     <BsModal
-        //         show={this.setState({ modalShow: true })}
-        //         onHide={() => this.setState({ modalShow: false })}
-        //         modalData={this.props.user.filter(user => user._id === val)}
-        //     />
-        // )
     }
 
     handleChange(event) {
@@ -175,19 +134,13 @@ export default class Bio extends Component {
     }
 
     handleSubmit(values) {
-        console.log("current state is: " + JSON.stringify(values));
-
-        console.log('this.state._id', this.state._id);
         if (this.state._id && this.state._id != null) {
-            console.log('values.firstName', values.firstName)
             values._id = this.state._id;
             this.props.updateUsers(values._id, values.firstName, values.lastName, values.email, values.phoneNumberExt.toString() + ' ' + values.phoneNumber1.toString() + ' ' + values.phoneNumber2.toString(), values.address1, values.address2, values.city, values.state, values.zipCode, values.country, values.qualification, values.comments);
             this.setState({ _id: null });
         } else {
             this.props.postUsers(values.firstName, values.lastName, values.email, values.phoneNumberExt.toString() + ' ' + values.phoneNumber1.toString() + ' ' + values.phoneNumber2.toString(), values.address1, values.address2, values.city, values.state, values.zipCode, values.country, values.qualification, values.comments);
         }
-        // this.setState({ user: [...this.state.user, values] }); //another array
-        console.log('this.state.user', this.state.user);
     }
 
     render() {
@@ -203,7 +156,7 @@ export default class Bio extends Component {
                                     <Form.Group as={Col}  >
                                         <Form.Label className="reg_txt form-label">Name <span>*</span></Form.Label>
                                         <Control.text model=".firstName" id="firstName" name="firstName" placeholder="First" className="form-control text input-name1"
-                                            validators={{ required, minLength: minLength(3), maxLength: maxLength(15) }} value={this.state.firstName}
+                                            validators={{ required, minLength: minLength(3), maxLength: maxLength(15) }} value={this.state.firstName || null}
                                             onChange={e => this.setState({ firstName: e.target.value })} />
                                         <Errors className="text-danger" model=".firstName" show="touched"
                                             messages={{ required: 'Required ! ', minLength: 'Must be greater than 2 characters ! ', maxLength: 'Must be 15 characters or less ! ' }} />
@@ -212,7 +165,7 @@ export default class Bio extends Component {
                                     <Form.Group as={Col} controlId="formGridPassword" >
                                         <Form.Label className="reg_txt form-label">&nbsp;</Form.Label>
                                         <Control.text model=".lastName" id="lastName" name="lastName" placeholder="Last"
-                                            className="form-control text input-name1" validators={{ required, minLength: minLength(3), maxLength: maxLength(15) }} value={this.state.lastName}
+                                            className="form-control text input-name1" validators={{ required, minLength: minLength(3), maxLength: maxLength(15) }} value={this.state.lastName || null}
                                             onChange={e => this.setState({ lastName: e.target.value })} />
                                         <Errors className="text-danger" model=".lastName" show="touched"
                                             messages={{ required: 'Required ! ', minLength: 'Must be greater than 2 characters ! ', maxLength: 'Must be 15 characters or less ! ' }} />
@@ -223,7 +176,7 @@ export default class Bio extends Component {
                                     <Form.Group className="mb-3" >
                                         <Form.Label className="reg_txt form-label">Email <span>*</span></Form.Label>
                                         {/* <Form.Control type="email" className='text input-name1' placeholder="Enter email" /> */}
-                                        <Control.text model=".email" id="email" name="email" placeholder="Email" className="form-control text input-name1" validators={{ required, validEmail }} value={this.state.email}
+                                        <Control.text model=".email" id="email" name="email" placeholder="Email" className="form-control text input-name1" validators={{ required, validEmail }} value={this.state.email || null}
                                             onChange={e => this.setState({ email: e.target.value })} />
                                         <Errors className="text-danger" model=".email" show="touched" messages={{ required: 'Required! ', validEmail: 'Invalid Email Address! ' }} />
                                     </Form.Group>
@@ -298,7 +251,7 @@ export default class Bio extends Component {
                                         <Form.Label className="reg_txt form-label">Address <span>*</span></Form.Label>
                                         {/* <Form.Control type="text" className="text input-name1" placeholder="Line 1" /> */}
                                         <Control.text model=".address1" id="address1" name="address1" placeholder="Line 1"
-                                            className="form-control text input-name1" validators={{ required }} value={this.state.address1} />
+                                            className="form-control text input-name1" validators={{ required }} value={this.state.address1 || null} />
                                         <Errors className="text-danger" model=".address1" show="touched" messages={{ required: 'Required! ' }}
                                             onChange={e => this.setState({ address1: e.target.value })} />
                                         <br />
@@ -313,13 +266,13 @@ export default class Bio extends Component {
                                 <Row className="mb-3">
                                     <Form.Group as={Col}>
                                         {/* <Form.Control type="text" className="text input-name1" placeholder="City" /> */}
-                                        <Control.text model=".city" id="city" name="city" placeholder="City" className="form-control text input-name1" value={this.state.city}
+                                        <Control.text model=".city" id="city" name="city" placeholder="City" className="form-control text input-name1" value={this.state.city || null}
                                             onChange={e => this.setState({ city: e.target.value })} />
                                         <Errors className="text-danger" model=".city" show="touched" />
                                     </Form.Group>
                                     <Form.Group as={Col}>
                                         {/* <Form.Control type="text" className="text input-name1" placeholder="State" /> */}
-                                        <Control.text model=".state" id="state" name="state" placeholder="State" className="form-control text input-name1" value={this.state.state}
+                                        <Control.text model=".state" id="state" name="state" placeholder="State" className="form-control text input-name1" value={this.state.state || null}
                                             onChange={e => this.setState({ state: e.target.value })} />
                                         <Errors className="text-danger" model=".state" show="touched" />
                                     </Form.Group>
@@ -335,7 +288,7 @@ export default class Bio extends Component {
                                     </Form.Group>
                                     <Form.Group as={Col} controlId="formGridPassword" >
                                         {/* <Form.Control type="text" className="text input-name1" placeholder="Country" /> */}
-                                        <Control.text model=".country" id="country" name="country" placeholder="Country" className="form-control text input-name1" value={this.state.country} onChange={e => this.setState({ country: e.target.value })} />
+                                        <Control.text model=".country" id="country" name="country" placeholder="Country" className="form-control text input-name1" value={this.state.country || null} onChange={e => this.setState({ country: e.target.value })} />
                                         <Errors className="text-danger" model=".zipcountrycode" show="touched" />
                                     </Form.Group>
                                 </Row>
@@ -344,7 +297,7 @@ export default class Bio extends Component {
                                     <Form.Group className="mb-3">
                                         <Form.Label className="reg_txt form-label">Write Your qualification <span>*</span></Form.Label>
                                         {/* <Form.Control type="email" className='text input-name1' placeholder="Write Your qualification" /> */}
-                                        <Control.text model=".qualification" id="qualification" name="qualification" placeholder="Write Your qualification" className="form-control text input-name1" validators={{ required }} value={this.state.qualification} onChange={e => this.setState({ qualification: e.target.value })} />
+                                        <Control.text model=".qualification" id="qualification" name="qualification" placeholder="Write Your qualification" className="form-control text input-name1" validators={{ required }} value={this.state.qualification || null} onChange={e => this.setState({ qualification: e.target.value })} />
                                         <Errors className="text-danger" model=".qualification" show="touched" messages={{ required: 'Required! ' }} />
                                     </Form.Group>
                                 </Row>
@@ -353,7 +306,7 @@ export default class Bio extends Component {
                                     <Form.Group className="mb-3">
                                         <Form.Label className="reg_txt form-label">Comment <span>*</span></Form.Label>
                                         {/* <Form.Control as="textarea" rows={3} className='text input-name1' placeholder="Write Your qualification" /> */}
-                                        <Control.textarea model=".comments" id="comments" name="comments" placeholder="Comments" className="form-control text input-name1" validators={{ required }} value={this.state.comments} onChange={e => this.setState({ comments: e.target.value })} />
+                                        <Control.textarea model=".comments" id="comments" name="comments" placeholder="Comments" className="form-control text input-name1" validators={{ required }} value={this.state.comments || null} onChange={e => this.setState({ comments: e.target.value })} />
                                         <Errors className="text-danger" model=".comments" show="touched" messages={{ required: 'Required! ' }} />
 
                                     </Form.Group>
@@ -361,7 +314,7 @@ export default class Bio extends Component {
 
                                 <Row>
                                     <Form.Group className="mb-3">
-                                        <Control.text type='hidden' model="._id" id="_id" name="_id" className="form-control text input-name1" value={this.state._id} onChange={e => this.setState({ _id: e.target.value })} />
+                                        <Control.text type='hidden' model="._id" id="_id" name="_id" className="form-control text input-name1" value={this.state._id || null} onChange={e => this.setState({ _id: e.target.value })} />
                                     </Form.Group>
                                 </Row>
 
@@ -375,7 +328,7 @@ export default class Bio extends Component {
                                                 (<Button type="submit" variant="primary" className="btn btn-primary submit w-100">Submit</Button>)) : ''}
 
                                             <br /><br />
-                                            <Button model="user" className="text input-name1 w-25" onClick={() => this.handleClear()}>New</Button>
+                                            <Button type="button" model="user" className="text input-name1 w-25" onClick={() => this.handleClear()}>New</Button>
                                         </div>
                                     </Form.Group>
                                 </Row>
@@ -389,8 +342,8 @@ export default class Bio extends Component {
                                 <Table>
                                     <tbody>
                                         <tr className="ztxt"><th>Name</th><th>Email</th><th>Phone</th><th>Edit</th><th>Delete</th><th>View</th></tr>
-                                        {this.state?.user.length ? this.state?.user.map((item) => (
-                                            <tr>
+                                        {this.state?.user.length ? this.state?.user.map((item, i) => (
+                                            <tr key={i}>
                                                 <td>{item.firstName}</td>
                                                 <td>{item.email}</td>
                                                 <td>{item.phoneNumber}</td>
