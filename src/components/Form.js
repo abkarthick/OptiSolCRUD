@@ -8,6 +8,7 @@ const required = (val) => val && val.length;
 const maxLength = (len) => (val) => !(val) || (val.length <= len);
 const minLength = (len) => (val) => (val) && (val.length >= len);
 const isNumber = (val) => !isNaN(Number(val));
+const isExtension = (val) => /^[0-9+]{1,3}$/i.test(val);;
 const validEmail = (val) => /^[A-z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(val);
 
 
@@ -23,7 +24,6 @@ export default class Bio extends Component {
         this.handleDelete = this.handleDelete.bind(this);
         this.viewUsers = this.viewUsers.bind(this);
         this.state = {
-            updatable: false,
             user: this.props.user,
             modalShow: false,
             toggleSubmit: false,
@@ -39,7 +39,6 @@ export default class Bio extends Component {
 
     handleClear() {
         this.setState = ({
-            updatable: true,
             _id: '',
             firstName: '',
             lastName: '',
@@ -56,21 +55,20 @@ export default class Bio extends Component {
             qualification: '',
             comments: '',
             toggleSubmit: false,
-            showBtnToggle: false
+            showBtnToggle: true
         });
     }
 
     handleUpdate(val) {
         const singleUser = this.props.user.filter(user => user._id === val)[0];
         this.setState({
-            updatable: true,
             _id: singleUser._id,
             firstName: singleUser.firstName,
             lastName: singleUser.lastName,
             email: singleUser.email,
-            phoneNumberExt: (singleUser.phoneNumber).toString().split(" ")[0],
-            phoneNumber1: (singleUser.phoneNumber).toString().split(" ")[1],
-            phoneNumber2: (singleUser.phoneNumber).toString().split(" ")[2],
+            phoneNumberExt: (singleUser.phoneNumber).toString().split(" ")[0] || null,
+            phoneNumber1: (singleUser.phoneNumber).toString().split(" ")[1] || null,
+            phoneNumber2: (singleUser.phoneNumber).toString().split(" ")[2] || null,
             address1: singleUser.address1,
             address2: singleUser.address2,
             city: singleUser.city,
@@ -91,7 +89,7 @@ export default class Bio extends Component {
                 this.state.firstName,
                 this.state.lastName,
                 this.state.email,
-                this.state.phoneNumberExt.toString() + ' ' + this.state.phoneNumber1.toString() + ' ' + this.state.phoneNumber2.toString(),
+                this.state.phoneNumberExt?.toString() + ' ' + this.state.phoneNumber1?.toString() + ' ' + this.state.phoneNumber2?.toString(),
                 this.state.address1,
                 this.state.address2,
                 this.state.city,
@@ -115,7 +113,9 @@ export default class Bio extends Component {
             firstName: singleUser.firstName,
             lastName: singleUser.lastName,
             email: singleUser.email,
-            phoneNumber: singleUser.phoneNumber,
+            phoneNumberExt: (singleUser.phoneNumber).toString().split(" ")[0] || null,
+            phoneNumber1: (singleUser.phoneNumber).toString().split(" ")[1] || null,
+            phoneNumber2: (singleUser.phoneNumber).toString().split(" ")[2] || null,
             address1: singleUser.address1,
             address2: singleUser.address2,
             city: singleUser.city,
@@ -154,19 +154,30 @@ export default class Bio extends Component {
                                 <Row className="mb-3">
 
                                     <Form.Group as={Col}  >
-                                        <Form.Label className="reg_txt form-label">Name <span>*</span></Form.Label>
-                                        <Control.text model=".firstName" id="firstName" name="firstName" placeholder="First" className="form-control text input-name1"
+                                        <Form.Label className="form-label reg_txt">Name <span>*</span></Form.Label>
+                                        <Control.text model=".firstName" id="firstName" name="firstName"
+                                            placeholder="First"
+                                            className="form-control text input-name1"
+                                            required
                                             validators={{ required, minLength: minLength(3), maxLength: maxLength(15) }} value={this.state.firstName || null}
-                                            onChange={e => this.setState({ firstName: e.target.value })} />
+                                            onChange={e => this.setState({ firstName: e.target.value })}
+                                            validateOn="blur" />
+
                                         <Errors className="text-danger" model=".firstName" show="touched"
                                             messages={{ required: 'Required ! ', minLength: 'Must be greater than 2 characters ! ', maxLength: 'Must be 15 characters or less ! ' }} />
                                     </Form.Group>
 
                                     <Form.Group as={Col} controlId="formGridPassword" >
                                         <Form.Label className="reg_txt form-label">&nbsp;</Form.Label>
-                                        <Control.text model=".lastName" id="lastName" name="lastName" placeholder="Last"
-                                            className="form-control text input-name1" validators={{ required, minLength: minLength(3), maxLength: maxLength(15) }} value={this.state.lastName || null}
-                                            onChange={e => this.setState({ lastName: e.target.value })} />
+                                        <Control.text model=".lastName" id="lastName" name="lastName"
+                                            placeholder="Last"
+                                            className="form-control text input-name1"
+                                            required
+                                            validators={{ required, minLength: minLength(3), maxLength: maxLength(15) }}
+                                            value={this.state.lastName || null}
+                                            onChange={e => this.setState({ lastName: e.target.value })}
+                                            validateOn="blur" />
+
                                         <Errors className="text-danger" model=".lastName" show="touched"
                                             messages={{ required: 'Required ! ', minLength: 'Must be greater than 2 characters ! ', maxLength: 'Must be 15 characters or less ! ' }} />
                                     </Form.Group>
@@ -176,29 +187,48 @@ export default class Bio extends Component {
                                     <Form.Group className="mb-3" >
                                         <Form.Label className="reg_txt form-label">Email <span>*</span></Form.Label>
                                         {/* <Form.Control type="email" className='text input-name1' placeholder="Enter email" /> */}
-                                        <Control.text model=".email" id="email" name="email" placeholder="Email" className="form-control text input-name1" validators={{ required, validEmail }} value={this.state.email || null}
-                                            onChange={e => this.setState({ email: e.target.value })} />
-                                        <Errors className="text-danger" model=".email" show="touched" messages={{ required: 'Required! ', validEmail: 'Invalid Email Address! ' }} />
+                                        <Control.text model=".email" id="email" name="email"
+                                            placeholder="Email"
+                                            required
+                                            className="form-control text input-name1"
+                                            validators={{ required, validEmail }} value={this.state.email || null}
+                                            onChange={e => this.setState({ email: e.target.value })}
+                                            validateOn="change" />
+
+                                        <Errors
+                                            className="text-danger"
+                                            model=".email"
+                                            show="touched"
+                                            messages={{ required: 'Required! ', validEmail: 'Invalid Email Address! ' }} />
                                     </Form.Group>
                                 </Row>
 
                                 <Row className="mb-3">
                                     <Form.Group as={Col}>
                                         <Form.Label className="reg_txt form-label">Phone Number <span>*</span></Form.Label>
-
                                     </Form.Group>
                                 </Row>
                                 <Row>
                                     <Form.Group as={Col}>
-                                        <Control.text model=".phoneNumberExt" id="phoneNumberExt" name="phoneNumberExt" placeholder=""
-                                            className="form-control text input-name1" validators={{ required, minLength: minLength(2), maxLength: maxLength(3), isNumber }} value={this.state.phoneNumberExt || '+91'}
-                                            onChange={e => this.setState({ phoneNumberExt: e.target.value })} />
-                                        <Errors className="text-danger" model=".phoneNumberExt" show="touched"
+                                        <Control.text model=".phoneNumberExt" id="phoneNumberExt"
+                                            name="phoneNumberExt"
+                                            placeholder="+91"
+                                            required
+                                            defaultValue={this.state.phoneNumberExt || '+91'}
+                                            className="form-control text input-name1" validators={{ required, minLength: minLength(1), maxLength: maxLength(3), isExtension }}
+                                            value={this.state.phoneNumberExt || '+91'}
+                                            onChange={e => this.setState({ phoneNumberExt: e.target.value })}
+                                            validateOn="blur" />
+
+                                        <Errors
+                                            className="text-danger"
+                                            model=".phoneNumberExt"
+                                            show="touched"
                                             messages={{
                                                 required: 'Required! ',
                                                 minLength: 'Must be greater than 2 numbers! ',
                                                 maxLength: 'Must be 15 numbers or less! ',
-                                                isNumber: 'Must be a number! '
+                                                isExtension: 'Must be a Extension add + Symbol! '
                                             }}
                                         />
                                     </Form.Group>
@@ -207,19 +237,21 @@ export default class Bio extends Component {
                                         <Control.text model=".phoneNumber1"
                                             id="phoneNumber1"
                                             name="phoneNumber1"
-                                            defaultValue={'12345'}
+                                            defaultValue={this.state.phoneNumber1 || '1234'}
                                             placeholder=""
                                             className="form-control text input-name1"
-                                            validators={{ required, minLength: minLength(4), maxLength: maxLength(4), isNumber }} value={this.state.phoneNumber1 || '1234'}
-                                            onChange={e => this.setState({ phoneNumber1: e.target.value })} />
+                                            validators={{ required, minLength: minLength(2), maxLength: maxLength(3), isNumber }} value={this.state.phoneNumber1 || '1234'}
+                                            onChange={e => this.setState({ phoneNumber1: e.target.value })}
+                                            validateOn="blur" />
+
                                         <Errors
                                             className="text-danger"
                                             model=".phoneNumber1"
                                             show="touched"
                                             messages={{
                                                 required: 'Required! ',
-                                                minLength: 'Must be greater than 3 numbers! ',
-                                                maxLength: 'Must be 4 numbers or less! ',
+                                                minLength: 'Must be greater than 2 numbers! ',
+                                                maxLength: 'Must be 3 numbers or less! ',
                                                 isNumber: 'Must be a number! '
                                             }}
                                         />
@@ -227,14 +259,15 @@ export default class Bio extends Component {
                                     <div className="line">-</div>
                                     <Form.Group as={Col}>
                                         <Control.text model=".phoneNumber2" id="phoneNumber2" name="phoneNumber2"
-                                            defaultValue={'12345'}
+                                            defaultValue={this.state.phoneNumber2 || "1234567"}
                                             placeholder="" className="form-control text input-name1"
                                             validators={{
-                                                required, minLength: minLength(6), maxLength: maxLength(8), isNumber
+                                                required, minLength: minLength(4), maxLength: maxLength(10), isNumber
                                             }}
                                             value={this.state.phoneNumber2 || "1234567"}
                                             onChange={e => this.setState({ phoneNumber2: e.target.value })}
-                                        />
+                                            validateOn="blur" />
+
                                         <Errors className="text-danger" model=".phoneNumber2" show="touched"
                                             messages={{
                                                 required: 'Required! ',
@@ -249,46 +282,102 @@ export default class Bio extends Component {
                                 <Row className="mb-3">
                                     <Form.Group as={Col}>
                                         <Form.Label className="reg_txt form-label">Address <span>*</span></Form.Label>
-                                        {/* <Form.Control type="text" className="text input-name1" placeholder="Line 1" /> */}
-                                        <Control.text model=".address1" id="address1" name="address1" placeholder="Line 1"
-                                            className="form-control text input-name1" validators={{ required }} value={this.state.address1 || null} />
-                                        <Errors className="text-danger" model=".address1" show="touched" messages={{ required: 'Required! ' }}
-                                            onChange={e => this.setState({ address1: e.target.value })} />
+                                        <Control.text
+                                            model=".address1"
+                                            id="address1"
+                                            required
+                                            name="address1" placeholder="Line 1"
+                                            className="form-control text input-name1"
+                                            validators={{ required }}
+                                            value={this.state.address1 || null}
+                                            validateOn="blur" />
+
+                                        <Errors
+                                            className="text-danger"
+                                            model=".address1"
+                                            show="touched"
+                                            messages={{ required: 'Required! ' }}
+                                            onChange={e => this.setState({ address1: e.target.value })}
+                                            validateOn="blur" />
                                         <br />
-                                        {/* <Form.Control type="text" className="text input-name1" placeholder="Line 2" /> */}
-                                        <Control.text model=".address2" id="address2" name="address2" placeholder="Line 2" className="form-control text input-name1"
-                                            validators={{ required }} value={this.state.address2} />
-                                        <Errors className="text-danger" model=".address2" show="touched" messages={{ required: 'Required! ' }}
+
+                                        <Control.text
+                                            model=".address2"
+                                            id="address2"
+                                            name="address2"
+                                            placeholder="Line 2"
+                                            className="form-control text input-name1"
+                                            validators={{ required }}
+                                            defaultValue={this.state.address2 || null}
+                                            value={this.state.address2 || null}
+                                            validateOn="blur" />
+
+                                        <Errors
+                                            className="text-danger"
+                                            model=".address2"
+                                            show="touched"
+                                            messages={{ required: 'Required! ' }}
                                             onChange={e => this.setState({ address2: e.target.value })} />
                                     </Form.Group>
                                 </Row>
 
                                 <Row className="mb-3">
                                     <Form.Group as={Col}>
-                                        {/* <Form.Control type="text" className="text input-name1" placeholder="City" /> */}
-                                        <Control.text model=".city" id="city" name="city" placeholder="City" className="form-control text input-name1" value={this.state.city || null}
+                                        <Control.text
+                                            model=".city"
+                                            id="city"
+                                            name="city"
+                                            placeholder="City"
+                                            className="form-control text input-name1"
+                                            defaultValue={this.state.city || null}
+                                            value={this.state.city || null}
                                             onChange={e => this.setState({ city: e.target.value })} />
+
                                         <Errors className="text-danger" model=".city" show="touched" />
                                     </Form.Group>
+
                                     <Form.Group as={Col}>
-                                        {/* <Form.Control type="text" className="text input-name1" placeholder="State" /> */}
-                                        <Control.text model=".state" id="state" name="state" placeholder="State" className="form-control text input-name1" value={this.state.state || null}
+                                        <Control.text
+                                            model=".state"
+                                            id="state"
+                                            name="state"
+                                            placeholder="State"
+                                            className="form-control text input-name1"
+                                            defaultValue={this.state.state || null}
+                                            value={this.state.state || null}
                                             onChange={e => this.setState({ state: e.target.value })} />
+
                                         <Errors className="text-danger" model=".state" show="touched" />
                                     </Form.Group>
+
                                 </Row>
 
                                 <Row className="mb-3">
                                     <Form.Group as={Col}>
-                                        {/* <Form.Control type="text" className="text input-name1" placeholder="Zipcode" /> */}
-                                        <Control.text model=".zipCode" id="zipCode" name="zipCode" placeholder="Zipcode" className="form-control text input-name1"
-                                            value={this.state.zipCode}
+                                        <Control.text
+                                            model=".zipCode"
+                                            id="zipCode"
+                                            name="zipCode"
+                                            placeholder="Zipcode"
+                                            className="form-control text input-name1"
+                                            defaultValue={this.state.zipCode || null}
+                                            value={this.state.zipCode || null}
                                             onChange={e => this.setState({ zipCode: e.target.value })} />
+
                                         <Errors className="text-danger" model=".zipCode" show="touched" />
                                     </Form.Group>
+
                                     <Form.Group as={Col} controlId="formGridPassword" >
-                                        {/* <Form.Control type="text" className="text input-name1" placeholder="Country" /> */}
-                                        <Control.text model=".country" id="country" name="country" placeholder="Country" className="form-control text input-name1" value={this.state.country || null} onChange={e => this.setState({ country: e.target.value })} />
+                                        <Control.text
+                                            model=".country"
+                                            id="country"
+                                            name="country"
+                                            placeholder="Country"
+                                            className="form-control text input-name1"
+                                            defaultValue={this.state.country || null}
+                                            value={this.state.country || null}
+                                            onChange={e => this.setState({ country: e.target.value })} />
+
                                         <Errors className="text-danger" model=".zipcountrycode" show="touched" />
                                     </Form.Group>
                                 </Row>
@@ -296,8 +385,18 @@ export default class Bio extends Component {
                                 <Row>
                                     <Form.Group className="mb-3">
                                         <Form.Label className="reg_txt form-label">Write Your qualification <span>*</span></Form.Label>
-                                        {/* <Form.Control type="email" className='text input-name1' placeholder="Write Your qualification" /> */}
-                                        <Control.text model=".qualification" id="qualification" name="qualification" placeholder="Write Your qualification" className="form-control text input-name1" validators={{ required }} value={this.state.qualification || null} onChange={e => this.setState({ qualification: e.target.value })} />
+                                        <Control.text
+                                            model=".qualification"
+                                            id="qualification"
+                                            name="qualification"
+                                            required
+                                            placeholder="Write Your qualification"
+                                            className="form-control text input-name1"
+                                            validators={{ required }}
+                                            defaultValue={this.state.qualification || null}
+                                            value={this.state.qualification || null}
+                                            onChange={e => this.setState({ qualification: e.target.value })} />
+
                                         <Errors className="text-danger" model=".qualification" show="touched" messages={{ required: 'Required! ' }} />
                                     </Form.Group>
                                 </Row>
@@ -305,16 +404,38 @@ export default class Bio extends Component {
                                 <Row>
                                     <Form.Group className="mb-3">
                                         <Form.Label className="reg_txt form-label">Comment <span>*</span></Form.Label>
-                                        {/* <Form.Control as="textarea" rows={3} className='text input-name1' placeholder="Write Your qualification" /> */}
-                                        <Control.textarea model=".comments" id="comments" name="comments" placeholder="Comments" className="form-control text input-name1" validators={{ required }} value={this.state.comments || null} onChange={e => this.setState({ comments: e.target.value })} />
-                                        <Errors className="text-danger" model=".comments" show="touched" messages={{ required: 'Required! ' }} />
+                                        <Control.textarea
+                                            model=".comments"
+                                            id="comments"
+                                            name="comments"
+                                            required
+                                            placeholder="Comments"
+                                            className="form-control text input-name1"
+                                            defaultValue={this.state.comments || null}
+                                            value={this.state.comments || null}
+                                            validators={{ required }} value={this.state.comments || null}
+                                            onChange={e => this.setState({ comments: e.target.value })} />
+
+                                        <Errors
+                                            className="text-danger"
+                                            model=".comments"
+                                            show="touched"
+                                            messages={{ required: 'Required! ' }} />
 
                                     </Form.Group>
                                 </Row>
 
                                 <Row>
                                     <Form.Group className="mb-3">
-                                        <Control.text type='hidden' model="._id" id="_id" name="_id" className="form-control text input-name1" value={this.state._id || null} onChange={e => this.setState({ _id: e.target.value })} />
+                                        <Control.text
+                                            type='hidden'
+                                            model="._id"
+                                            id="_id"
+                                            name="_id"
+                                            className="form-control text input-name1"
+                                            defaultValue={this.state._id || null}
+                                            value={this.state._id || null}
+                                            onChange={e => this.setState({ _id: e.target.value })} />
                                     </Form.Group>
                                 </Row>
 
